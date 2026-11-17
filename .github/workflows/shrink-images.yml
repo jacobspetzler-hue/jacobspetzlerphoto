@@ -1,0 +1,29 @@
+# Whenever new photos are added, this makes web-sized copies of any that are
+# much larger than the site needs, so the site stays quick to rebuild.
+name: Shrink oversized photos
+on:
+  push:
+    branches: [main]
+    paths: ['src/media/**']
+permissions:
+  contents: write
+jobs:
+  shrink:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-save sharp
+      - run: node scripts/shrink-images.mjs
+      - name: Save the smaller copies
+        run: |
+          if [ -n "$(git status --porcelain src/media)" ]; then
+            git config user.name "photo-shrinker"
+            git config user.email "actions@users.noreply.github.com"
+            git add src/media
+            git commit -m "Shrink oversized photos"
+            git pull --rebase
+            git push
+          fi
