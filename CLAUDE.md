@@ -155,10 +155,10 @@ These came out of a long design process. Do not undo them without Jacob asking.
 
 **"Change the homepage clip"** That is the Homepage form (`Clip in the big frame`). If he sends raw footage, make a silent 3:2 `.mp4`, 1440×960, under 20 MB, plus a poster frame.
 
-## Unfinished business (as of 16 November 2026)
+## Unfinished business (as of 17 November 2026)
 
 1. **Pages CMS has not been tested end to end.** `.pages.yml` passes Pages CMS's own schema, but nobody has yet signed in and saved an entry. First test: Jacob signs in at app.pagescms.org with GitHub, grants access to this repository, opens **Homepage**, changes something small, saves, and checks the live site two minutes later. If a form misbehaves, the fix is almost always in `.pages.yml`.
-2. **The photo-shrinking workflow has never run on a real upload.** The script is tested; the GitHub Action is not. After Jacob's first photo upload, check the Actions tab. If it fails, the site still works; uploads are simply not shrunk.
+2. **The photo-shrinking workflow has run once, on photos that were already small enough.** It passed with nothing to do (17 November 2026). It has not yet had to shrink a genuinely oversized upload from the form. After Jacob's first large upload, check the Actions tab. If it fails, the site still works; uploads are simply not shrunk.
 3. **The domain has not been moved.** jacobspetzler.com still points at Squarespace. Still unknown: where the domain is registered (Squarespace or elsewhere) and whether any email address uses the domain. Plan:
    - In Cloudflare, open the `jacobspetzlerphoto` project → Settings → Domains & Routes → add `www.jacobspetzler.com` and `jacobspetzler.com` as custom domains. Cloudflare will say the domain must first be added to the Cloudflare account.
    - Add the domain to Cloudflare (free plan). Cloudflare copies the existing DNS records. **Before switching, check for MX records** (email). If any exist, make sure they are copied, or email will stop.
