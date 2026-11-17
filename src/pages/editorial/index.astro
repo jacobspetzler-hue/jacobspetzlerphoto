@@ -1,0 +1,31 @@
+---
+// Editorial → Front Pages: a wall of every story that ran on A1.
+import Base from '../../layouts/Base.astro';
+import Img from '../../components/Img.astro';
+import { frontPages, dot } from '../../lib/content';
+import { yearOf } from '../../lib/media';
+
+const stories = await frontPages();
+---
+
+<Base title="Front Pages" section="editorial" sub="front-pages">
+  <div class="wrap page">
+    <div class="page-head">
+      <h1>Front Pages</h1>
+      <p>Every story of mine that ran on A1. Select a page to read it full size, see the photographs and open the story online.</p>
+    </div>
+    <div class="fronts">
+      {
+        stories.map((s) => (
+          <a class="front-card" href={`/editorial/${s.id}/`}>
+            <Img src={s.data.front_page} zoom={false} alt={`Front page of ${s.data.publication}: ${s.data.title}`} sizes="(max-width: 820px) 50vw, 280px" />
+            <div>
+              <div class="t">{s.data.title}</div>
+              <div class="m">{dot([s.data.publication, yearOf(s.data.date), s.data.role])}</div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</Base>

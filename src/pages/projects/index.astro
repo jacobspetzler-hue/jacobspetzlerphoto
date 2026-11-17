@@ -1,0 +1,30 @@
+---
+// Projects → Bodies of Work: one row per project.
+import Base from '../../layouts/Base.astro';
+import Img from '../../components/Img.astro';
+import { allProjects } from '../../lib/content';
+
+const projects = await allProjects();
+---
+
+<Base title="Projects" section="projects" sub="work">
+  <div class="wrap project-list">
+    {
+      projects.map((p) => {
+        const cover = p.data.cover || p.data.images?.[0]?.image || p.data.book?.spreads?.[0]?.image;
+        return (
+          <a class="project-row" href={`/projects/${p.id}/`}>
+            <div class:list={['thumb', { dark: p.data.background === 'dark' }]}>
+              {cover && <Img src={cover} zoom={false} alt="" sizes="(max-width: 820px) 96px, 280px" />}
+            </div>
+            <div class="title">{p.data.title}</div>
+            <div class="meta">
+              <span>{p.data.year}</span>
+              <span class="quiet-text">{(p.data.forms ?? []).join(' · ')}</span>
+            </div>
+          </a>
+        );
+      })
+    }
+  </div>
+</Base>

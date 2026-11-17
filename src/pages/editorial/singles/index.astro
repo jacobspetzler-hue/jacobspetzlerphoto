@@ -1,0 +1,18 @@
+---
+// Editorial → Singles: stand-alone pictures.
+import Base from '../../../layouts/Base.astro';
+import Rows from '../../../components/Rows.astro';
+import { getEntry } from 'astro:content';
+
+const page = (await getEntry('pages', 'singles'))?.data as any;
+const items = page?.images ?? [];
+---
+
+<Base title="Singles" section="editorial" sub="singles">
+  <div class="wrap page">
+    <div class="page-head">
+      <h1>Singles</h1>
+    </div>
+    {items.length ? <Rows items={items} large fallbackAlt="Photograph by Jacob Spetzler" /> : <p class="empty">Singles to come.</p>}
+  </div>
+</Base>

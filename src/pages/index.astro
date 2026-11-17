@@ -1,0 +1,95 @@
+---
+// Homepage: name, three doors, the big frame, short bio and contact.
+import Base from '../layouts/Base.astro';
+import Img from '../components/Img.astro';
+import { getEntry, render } from 'astro:content';
+import { picture } from '../lib/media';
+
+const entry = await getEntry('pages', 'home');
+const home = entry!.data as any;
+const { Content } = await render(entry!);
+
+const doors = [
+  { key: 'editorial', label: 'Editorial', href: '/editorial/' },
+  { key: 'projects', label: 'Projects', href: '/projects/' },
+  { key: 'film', label: 'Film', href: '/film/' },
+];
+
+// A single 3:2 still fills the frame; anything else sits on a mat, uncropped.
+async function stillLayer(list: any[] = []) {
+  const pics = (await Promise.all(list.slice(0, 2).map(async (x) => ({ x, pic: await picture(x.image) })))).filter((p) => p.pic);
+  const bleed = pics.length === 1 && Math.abs(pics[0].pic!.ratio - 1.5) < 0.03;
+  return { pics, bleed };
+}
+const ed = await stillLayer(home.previews?.editorial);
+const pr = await stillLayer(home.previews?.projects);
+const arrow = `<svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="5" y1="14" x2="22" y2="14"></line><polyline points="15,7 22,14 15,21"></polyline></svg>`;
+---
+
+<Base section="home">
+  <div class="wrap home">
+    <div class="home-name">
+      <h1>JACOB SPETZLER</h1>
+      <p>{home.tagline}</p>
+    </div>
+
+    <nav class="doors" aria-label="Sections">
+      {
+        doors.map((d) => (
+          <a class="door" href={d.href} data-preview={d.key}>
+            <span class="door-title">
+              {d.label}
+              <Fragment set:html={arrow} />
+            </span>
+            <span class="door-text">{home.doors?.[d.key]}</span>
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="frame">
+      <div class="layer is-active" data-layer="reel">
+        <video data-loop muted loop playsinline autoplay preload="metadata" poster={home.loop_poster} aria-label="Short silent clips from recent work">
+          <source src={home.loop_video} type="video/mp4" />
+        </video>
+      </div>
+      {
+        ed.pics.length > 0 && (
+          <div class:list={['layer', ed.bleed ? 'bleed' : 'matted']} data-layer="editorial">
+            {ed.pics.map(({ x }) => <Img src={x.image} alt={x.alt} zoom={false} sizes="(max-width: 1240px) 100vw, 1160px" fallbackAlt="Editorial preview" />)}
+          </div>
+        )
+      }
+      {
+        pr.pics.length > 0 && (
+          <div class:list={['layer', pr.bleed ? 'bleed' : 'matted']} data-layer="projects">
+            {pr.pics.map(({ x }) => <Img src={x.image} alt={x.alt} zoom={false} sizes="(max-width: 1240px) 60vw, 600px" fallbackAlt="Projects preview" />)}
+          </div>
+        )
+      }
+      {
+        home.previews?.film_video && (
+          <div class="layer" data-layer="film">
+            <video muted loop playsinline preload="none" poster={home.previews.film_poster}>
+              <source src={home.previews.film_video} type="video/mp4" />
+            </video>
+          </div>
+        )
+      }
+      <button class="frame-play" type="button">Pause</button>
+    </div>
+
+    <section class="home-about">
+      <div class="home-bio">
+        <Content />
+        <p><a href="/about/">Full bio and CV →</a></p>
+      </div>
+      <div class="contact">
+        <div class="label">Contact</div>
+        {home.email && (home.email.includes('@') ? <a class="underline" href={`mailto:${home.email}`}>{home.email}</a> : <span>{home.email}</span>)}
+        {home.instagram && <a href={`https://www.instagram.com/${String(home.instagram).replace('@', '')}/`}>{home.instagram}</a>}
+        <span class="quiet-text">{home.availability}</span>
+      </div>
+    </section>
+  </div>
+</Base>

@@ -1,0 +1,21 @@
+---
+// Commercial: one quiet, curated page of branded and client work.
+import Base from '../layouts/Base.astro';
+import Rows from '../components/Rows.astro';
+import { getEntry } from 'astro:content';
+
+const page = (await getEntry('pages', 'commercial'))?.data as any;
+const home = (await getEntry('pages', 'home'))?.data as any;
+const items = (page?.images ?? []).filter((x: any) => x.image);
+---
+
+<Base title="Commercial" section="commercial">
+  <div class="wrap page">
+    <div class="page-head">
+      <h1>Commercial</h1>
+      {page?.intro && <p>{page.intro}</p>}
+    </div>
+    {items.length ? <Rows items={items} large fallbackAlt="Commercial photograph by Jacob Spetzler" /> : <p class="empty">Selected client work to come.</p>}
+    {home?.email?.includes('@') && <p><a class="button" href={`mailto:${home.email}`}>Get in touch →</a></p>}
+  </div>
+</Base>

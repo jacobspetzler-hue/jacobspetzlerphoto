@@ -1,0 +1,27 @@
+---
+// Projects → Curation: the list of curated shows.
+import Base from '../../layouts/Base.astro';
+import { allCuration, dot } from '../../lib/content';
+
+const shows = await allCuration();
+---
+
+<Base title="Curation" section="projects" sub="curation">
+  <div class="wrap page">
+    <div class="page-head"><h1>Curation</h1></div>
+    {
+      shows.length ? (
+        <div class="list-rows">
+          {shows.map((s) => (
+            <a href={`/curation/${s.id}/`}>
+              <span class="big">{s.data.title}{s.data.subtitle && <span class="quiet-text">: {s.data.subtitle}</span>}</span>
+              <span class="small">{dot([[s.data.venue, s.data.city].filter(Boolean).join(', '), s.data.dates || s.data.year])}</span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p class="empty">Curated shows to come.</p>
+      )
+    }
+  </div>
+</Base>

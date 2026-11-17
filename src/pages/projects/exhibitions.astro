@@ -1,0 +1,32 @@
+---
+// Projects → Exhibitions: every show, gathered from the projects and curated shows.
+import Base from '../../layouts/Base.astro';
+import { allProjects, allCuration, dot } from '../../lib/content';
+
+const projects = await allProjects();
+const curated = await allCuration();
+const shows = [
+  ...projects.flatMap((p) => (p.data.exhibitions ?? []).map((e) => ({ title: e.title || p.data.title, venue: e.venue, city: e.city, dates: e.dates, year: e.year, href: `/projects/${p.id}/#exhibition`, kind: '' }))),
+  ...curated.map((c) => ({ title: c.data.title, venue: c.data.venue, city: c.data.city, dates: c.data.dates, year: c.data.year, href: `/curation/${c.id}/`, kind: 'Curator' })),
+].sort((a, b) => Number(b.year ?? 0) - Number(a.year ?? 0));
+---
+
+<Base title="Exhibitions" section="projects" sub="exhibitions">
+  <div class="wrap page">
+    <div class="page-head"><h1>Exhibitions</h1></div>
+    {
+      shows.length ? (
+        <div class="list-rows">
+          {shows.map((s) => (
+            <a href={s.href}>
+              <span class="big">{s.title}</span>
+              <span class="small">{dot([s.kind, [s.venue, s.city].filter(Boolean).join(', '), s.dates || s.year])}</span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p class="empty">Exhibitions to come.</p>
+      )
+    }
+  </div>
+</Base>

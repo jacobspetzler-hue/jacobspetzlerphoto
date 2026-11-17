@@ -1,0 +1,74 @@
+---
+// One curated show, at a short address that can be sent to a gallerist.
+import Base from '../../layouts/Base.astro';
+import Img from '../../components/Img.astro';
+import Rows from '../../components/Rows.astro';
+import { render } from 'astro:content';
+import { allCuration, dot } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const shows = await allCuration();
+  return shows.map((s) => ({ params: { slug: s.id }, props: { id: s.id } }));
+}
+const show = (await allCuration()).find((s) => s.id === Astro.props.id)!;
+const d = show.data;
+const { Content } = await render(show);
+const views = (d.installation ?? []).filter((x) => x.image);
+const artists = d.artists ?? [];
+const shareUrl = new URL(`/curation/${show.id}/`, Astro.site).href;
+---
+
+<Base title={`${d.title}${d.subtitle ? ': ' + d.subtitle : ''}`} description={`${d.title}, curated by Jacob Spetzler.`} section="projects" sub="curation">
+  <div class="wrap page" style="gap: clamp(48px, 8vw, 96px); padding-top: 72px">
+    <div class="curation-head">
+      <div class="label">Curated by Jacob Spetzler</div>
+      <h1>{d.title}</h1>
+      {d.subtitle && <div class="sub">{d.subtitle}</div>}
+      <div style="font-size: 15px; color: var(--mid)">{dot([d.venue, d.city, d.dates])}</div>
+      <div class="actions">
+        {d.onesheet && <a class="button solid" href={d.onesheet}>Download one-sheet (PDF)</a>}
+        <button class="button" type="button" data-copy-link={shareUrl}>Copy link</button>
+      </div>
+    </div>
+
+    {d.hero && <div data-gallery><Img src={d.hero} eager alt={`Installation view of ${d.title}`} sizes="(max-width: 1240px) 100vw, 1160px" /></div>}
+
+    <div class="split">
+      <div class="k">Curatorial statement</div>
+      <div class="v prose"><Content /></div>
+
+      <div class="k">Artists</div>
+      <div class="v" style="padding-top: 0; border-top: 0">
+        {
+          artists.map((a) => (
+            <div class="artist">
+              <div class="name">
+                {a.name}
+                <small>
+                  {a.website && <a class="underline" href={a.website}>Website</a>}
+                  {a.instagram && <a class="underline" href={`https://www.instagram.com/${a.instagram.replace('@', '')}/`}>{a.instagram}</a>}
+                </small>
+              </div>
+              {a.work && <p><em>{a.work}</em></p>}
+              {a.bio && <p>{a.bio}</p>}
+              {(a.images ?? []).filter((x) => x.image).length > 0 && (
+                <div style="margin-top: 16px">
+                  <Rows items={(a.images ?? []).filter((x) => x.image)} fallbackAlt={`Work by ${a.name}`} />
+                </div>
+              )}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    {
+      views.length > 0 && (
+        <section class="block">
+          <h2 class="label-rule">Installation views</h2>
+          <Rows items={views} large fallbackAlt={`Installation view of ${d.title}`} />
+        </section>
+      )
+    }
+  </div>
+</Base>

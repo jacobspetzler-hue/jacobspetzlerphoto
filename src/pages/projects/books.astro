@@ -1,0 +1,31 @@
+---
+// Projects → Books: every project that has a book attached.
+import Base from '../../layouts/Base.astro';
+import Img from '../../components/Img.astro';
+import { allProjects } from '../../lib/content';
+
+const books = (await allProjects()).filter((p) => (p.data.book?.spreads ?? []).length > 0 || p.data.book?.details);
+---
+
+<Base title="Books" section="projects" sub="books">
+  <div class="wrap page">
+    <div class="page-head"><h1>Books</h1></div>
+    {
+      books.length ? (
+        <div class="two-up">
+          {books.map((p) => (
+            <a class="film-card" href={`/projects/${p.id}/#book`}>
+              {p.data.book?.spreads?.[0]?.image && <Img src={p.data.book.spreads[0].image} zoom={false} alt={`${p.data.title}, the book`} sizes="(max-width: 820px) 100vw, 570px" />}
+              <div class="row">
+                <strong>{p.data.title}</strong>
+                <span>{p.data.book?.details || p.data.year}</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p class="empty">Books to come.</p>
+      )
+    }
+  </div>
+</Base>

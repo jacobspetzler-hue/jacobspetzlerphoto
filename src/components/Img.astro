@@ -1,0 +1,57 @@
+---
+// Shows one picture at its own shape (never cropped).
+// zoom: clicking opens it full screen. page: keeps a very large copy so newspaper pages can be read.
+import { picture } from '../lib/media';
+
+interface Props {
+  src?: string | null;
+  alt?: string | null;
+  caption?: string | null;
+  sizes?: string;
+  zoom?: boolean;
+  page?: boolean;
+  eager?: boolean;
+  class?: string;
+  fallbackAlt?: string;
+}
+const { src, alt, caption, sizes = '100vw', zoom = true, page = false, eager = false, fallbackAlt = '' } = Astro.props;
+const pic = await picture(src, { zoom: page });
+const altText = alt || caption || fallbackAlt;
+---
+
+{
+  pic &&
+    (zoom ? (
+      <a
+        class:list={['zoom', Astro.props.class]}
+        href={pic.full.src}
+        data-pswp-width={pic.full.width}
+        data-pswp-height={pic.full.height}
+        data-caption={caption || undefined}
+        aria-label={`View larger: ${altText || 'photograph'}`}
+      >
+        <img
+          src={pic.src}
+          srcset={pic.srcset}
+          sizes={sizes}
+          width={pic.width}
+          height={pic.height}
+          alt={altText}
+          loading={eager ? 'eager' : 'lazy'}
+          decoding="async"
+        />
+      </a>
+    ) : (
+      <img
+        class={Astro.props.class}
+        src={pic.src}
+        srcset={pic.srcset}
+        sizes={sizes}
+        width={pic.width}
+        height={pic.height}
+        alt={altText}
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+      />
+    ))
+}

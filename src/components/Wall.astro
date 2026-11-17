@@ -1,0 +1,67 @@
+---
+// "Gallery wall" layout: single images, pairs of verticals, and the odd image
+// set off to one side, with lots of space. The arrangement is worked out
+// automatically from the order and shape of the photos.
+import Img from './Img.astro';
+import { picture } from '../lib/media';
+
+interface Item {
+  image?: string | null;
+  caption?: string | null;
+  alt?: string | null;
+  pair?: boolean | null;
+}
+interface Props {
+  items: Item[];
+  fallbackAlt?: string;
+}
+const { items, fallbackAlt = '' } = Astro.props;
+const ready = (
+  await Promise.all(items.map(async (it) => ({ it, pic: await picture(it.image) })))
+).filter((x) => x.pic) as { it: Item; pic: NonNullable<Awaited<ReturnType<typeof picture>>> }[];
+
+type Group = { kind: 'single'; a: (typeof ready)[number]; cls: string } | { kind: 'pair'; a: (typeof ready)[number]; b: (typeof ready)[number] };
+const groups: Group[] = [];
+const wide = ['w-center', 'w-left', 'w-center', 'w-right'];
+const tall = ['w-tall', 'w-tall w-left', 'w-tall w-right'];
+let w = 0;
+let t = 0;
+for (let i = 0; i < ready.length; i++) {
+  const a = ready[i];
+  const b = ready[i + 1];
+  const isTall = a.pic.ratio < 0.95;
+  const nextTall = b && b.pic.ratio < 0.95;
+  if (b && (a.it.pair || (isTall && nextTall))) {
+    groups.push({ kind: 'pair', a, b });
+    i++;
+  } else if (isTall) {
+    groups.push({ kind: 'single', a, cls: tall[t++ % tall.length] });
+  } else if (a.pic.ratio < 1.15) {
+    groups.push({ kind: 'single', a, cls: 'w-square' });
+  } else {
+    groups.push({ kind: 'single', a, cls: wide[w++ % wide.length] });
+  }
+}
+---
+
+<div class="wall" data-gallery>
+  {
+    groups.map((g) =>
+      g.kind === 'pair' ? (
+        <div class="pair">
+          {[g.a, g.b].map((x) => (
+            <figure style={`--r:${x.pic.ratio.toFixed(4)}`}>
+              <Img src={x.it.image} alt={x.it.alt} caption={x.it.caption} fallbackAlt={fallbackAlt} sizes="(max-width: 820px) 48vw, 34vw" />
+              {x.it.caption && <figcaption>{x.it.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      ) : (
+        <figure class={g.cls}>
+          <Img src={g.a.it.image} alt={g.a.it.alt} caption={g.a.it.caption} fallbackAlt={fallbackAlt} sizes="(max-width: 820px) 100vw, 76vw" />
+          {g.a.it.caption && <figcaption>{g.a.it.caption}</figcaption>}
+        </figure>
+      ),
+    )
+  }
+</div>

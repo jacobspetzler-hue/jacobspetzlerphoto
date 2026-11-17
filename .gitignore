@@ -1,0 +1,7 @@
+# Things the computer rebuilds on its own — never stored here.
+node_modules/
+dist/
+preview/
+.astro/
+.wrangler/
+.DS_Store

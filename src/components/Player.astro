@@ -1,0 +1,37 @@
+---
+// A film player. Shows the poster (or a silent loop) first; YouTube or Vimeo
+// is only loaded after someone presses Play.
+import { picture, embedUrl } from '../lib/media';
+
+interface Props {
+  title: string;
+  video?: string | null;
+  poster?: string | null;
+  loop?: string | null;
+  tag?: string;
+}
+const { title, video, poster, loop, tag } = Astro.props;
+const pic = await picture(poster);
+const embed = embedUrl(video);
+---
+
+<div class="player">
+  {pic && <img src={pic.src} srcset={pic.srcset} sizes="(max-width: 1240px) 100vw, 1160px" alt="" loading="lazy" />}
+  {
+    !pic && loop && (
+      <video data-loop muted loop playsinline preload="none" aria-hidden="true">
+        <source src={loop} type="video/mp4" />
+      </video>
+    )
+  }
+  {
+    embed && (
+      <button class="play" type="button" data-embed={embed} data-title={title} aria-label={`Play ${title}`}>
+        <svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="#f2f2ef">
+          <polygon points="9,5 23,14 9,23" />
+        </svg>
+      </button>
+    )
+  }
+  {!embed && tag && <span class="tag">{tag}</span>}
+</div>

@@ -1,0 +1,126 @@
+---
+// One project: statement, the images, then its book and exhibitions if it has them.
+import Base from '../../layouts/Base.astro';
+import Img from '../../components/Img.astro';
+import Rows from '../../components/Rows.astro';
+import Wall from '../../components/Wall.astro';
+import { render } from 'astro:content';
+import { allProjects, dot } from '../../lib/content';
+import { picture, embedUrl } from '../../lib/media';
+
+export async function getStaticPaths() {
+  const projects = await allProjects();
+  return projects.map((p) => ({ params: { slug: p.id }, props: { id: p.id } }));
+}
+const projects = await allProjects();
+const idx = projects.findIndex((p) => p.id === Astro.props.id);
+const project = projects[idx];
+const next = projects.length > 1 ? projects[(idx + 1) % projects.length] : null;
+const d = project.data;
+const { Content } = await render(project);
+const hasStatement = Boolean(project.body?.trim());
+const images = (d.images ?? []).filter((x) => x.image);
+const spreads = (d.book?.spreads ?? []).filter((x) => x.image);
+const spreadPics = (await Promise.all(spreads.map((s) => picture(s.image)))).filter(Boolean);
+const exhibitions = d.exhibitions ?? [];
+const hasBook = spreadPics.length > 0;
+const bookVideo = embedUrl(d.book?.video);
+---
+
+<Base title={d.title} description={d.summary || undefined} section="projects" sub="work" theme={d.background === 'dark' ? 'dark' : 'white'}>
+  <div class="wrap project">
+    <div class="project-head">
+      <div class="lead">
+        <h1>{d.title}</h1>
+        <div class="meta">
+          {d.year}<br />
+          {(d.forms ?? []).join(' · ')}
+          {d.note && <><br />{d.note}</>}
+        </div>
+        {
+          (hasBook || exhibitions.length > 0) && (
+            <div class="jumps">
+              {hasBook && images.length > 0 && <a class="button small" href="#book">The book ↓</a>}
+              {exhibitions.length > 0 && <a class="button small" href="#exhibition">The exhibition ↓</a>}
+            </div>
+          )
+        }
+      </div>
+      {hasStatement && <div class="statement prose"><Content /></div>}
+    </div>
+
+    {
+      images.length > 0 &&
+        (d.arrangement === 'grid' ? (
+          <Rows items={images} large fallbackAlt={`Photograph from ${d.title}`} />
+        ) : (
+          <Wall items={images} fallbackAlt={`Photograph from ${d.title}`} />
+        ))
+    }
+
+    {
+      hasBook && (
+        <section id="book" class="block">
+          <div class="section-rule">
+            <h2>The book</h2>
+            {d.book?.details && <span>{d.book.details}</span>}
+          </div>
+          <div data-book tabindex="0" aria-label="Book spreads. Use the left and right arrow keys to turn pages.">
+            <div class="book-stage">
+              <img src={spreadPics[0]!.src} srcset={spreadPics[0]!.srcset} sizes="(max-width: 1240px) 100vw, 1160px" width={spreadPics[0]!.width} height={spreadPics[0]!.height} alt={`${d.title}, spread 1`} />
+            </div>
+            <div class="book-bar" style="margin: 14px 0 20px">
+              <span class="count">1 / {spreadPics.length}</span>
+              <span class="steps">
+                <button class="button small" type="button" data-prev>← Previous</button>
+                <button class="button small" type="button" data-next>Next spread →</button>
+              </span>
+            </div>
+            <div class="book-thumbs">
+              {spreadPics.map((p, i) => (
+                <button type="button" data-src={p!.src} data-srcset={p!.srcset} data-alt={`${d.title}, spread ${i + 1}`} aria-label={`Go to spread ${i + 1}`}>
+                  <img src={p!.srcset.split(' ')[0]} width={p!.width} height={p!.height} alt="" loading="lazy" decoding="async" />
+                </button>
+              ))}
+            </div>
+          </div>
+          {bookVideo && (
+            <div class="player">
+              <button class="play" type="button" data-embed={bookVideo} data-title={`${d.title} page-through`} aria-label="Play the page-through video">
+                <svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="#f2f2ef"><polygon points="9,5 23,14 9,23" /></svg>
+              </button>
+            </div>
+          )}
+        </section>
+      )
+    }
+
+    {
+      exhibitions.length > 0 && (
+        <section id="exhibition" class="block">
+          {exhibitions.map((e) => {
+            const views = (e.images ?? []).filter((x) => x.image);
+            return (
+              <>
+                <div class="section-rule">
+                  <h2>The exhibition</h2>
+                  <span>{dot([[e.venue, e.city].filter(Boolean).join(', '), e.dates])}</span>
+                </div>
+                {views.length > 0 ? <Rows items={views} large fallbackAlt={`Installation view, ${d.title}`} /> : <p class="note">Installation views to come.</p>}
+              </>
+            );
+          })}
+        </section>
+      )
+    }
+
+    {
+      next && (
+        <a class="next-project" href={`/projects/${next.id}/`}>
+          <span class="label">Next project</span>
+          <strong>{next.data.title} →</strong>
+        </a>
+      )
+    }
+  </div>
+</Base>

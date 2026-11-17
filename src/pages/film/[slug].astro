@@ -1,0 +1,60 @@
+---
+// One film: the player, description, stills and credits.
+import Base from '../../layouts/Base.astro';
+import Player from '../../components/Player.astro';
+import Rows from '../../components/Rows.astro';
+import { allFilms } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const films = await allFilms();
+  return films.map((f) => ({ params: { slug: f.id }, props: { id: f.id } }));
+}
+const film = (await allFilms()).find((f) => f.id === Astro.props.id)!;
+const d = film.data;
+const facts = [
+  ['Client', d.client],
+  ['Year', d.year],
+  ['Runtime', d.runtime],
+  ['Role', d.role],
+].filter(([, v]) => v);
+const stills = (d.stills ?? []).filter((s) => s.image);
+---
+
+<Base title={d.title} description={d.description || undefined} section="film" sub="films">
+  <div class="wrap film">
+    <section class="block">
+      <a class="back" href="/film/">← All films</a>
+      <Player title={d.title} video={d.video} poster={d.poster} loop={d.loop} tag="Film link to come" />
+      <div class="film-info">
+        <div class="lead">
+          <h1>{d.title}</h1>
+          {d.description && <p>{d.description}</p>}
+        </div>
+        <dl class="facts inline">
+          {facts.map(([k, v]) => (
+            <div>
+              <dt class="quiet-text">{k}</dt>
+              <dd>{v}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </section>
+    {
+      stills.length > 0 && (
+        <section class="block">
+          <h2 class="label-rule">Stills</h2>
+          <Rows items={stills} large fallbackAlt={`Still from ${d.title}`} />
+        </section>
+      )
+    }
+    {
+      d.credits && (
+        <section class="block">
+          <h2 class="label-rule">Credits</h2>
+          <div class="credits">{d.credits}</div>
+        </section>
+      )
+    }
+  </div>
+</Base>

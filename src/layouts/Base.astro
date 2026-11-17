@@ -1,0 +1,101 @@
+---
+// The frame every page sits in: the top navigation, the smaller second row
+// of links inside each section, and the footer.
+import '@fontsource-variable/inter';
+import '@fontsource-variable/inter-tight';
+import 'photoswipe/style.css';
+import '../styles/global.css';
+import { getEntry } from 'astro:content';
+
+interface Props {
+  title?: string;
+  description?: string;
+  section?: 'home' | 'editorial' | 'projects' | 'film' | 'commercial' | 'about';
+  theme?: 'offwhite' | 'white' | 'dark';
+  sub?: string;
+}
+const { title, description, section = 'home', sub } = Astro.props;
+const theme = Astro.props.theme ?? ({ projects: 'white', film: 'dark' }[section as string] || 'offwhite');
+const home = (await getEntry('pages', 'home'))?.data as any;
+const fullTitle = title ? `${title} — Jacob Spetzler` : 'Jacob Spetzler — Photographer and filmmaker';
+const desc = description || 'Jacob Spetzler is a photographer and filmmaker based in Gunnison, Colorado.';
+
+const main = [
+  { key: 'editorial', label: 'Editorial', href: '/editorial/' },
+  { key: 'projects', label: 'Projects', href: '/projects/' },
+  { key: 'film', label: 'Film', href: '/film/' },
+];
+const quiet = [
+  { key: 'commercial', label: 'Commercial', href: '/commercial/' },
+  { key: 'about', label: 'About', href: '/about/' },
+];
+const subnavs: Record<string, { key: string; label: string; href: string }[]> = {
+  editorial: [
+    { key: 'front-pages', label: 'Front Pages', href: '/editorial/' },
+    { key: 'stories', label: 'Stories', href: '/editorial/stories/' },
+    { key: 'singles', label: 'Singles', href: '/editorial/singles/' },
+  ],
+  projects: [
+    { key: 'work', label: 'Bodies of Work', href: '/projects/' },
+    { key: 'exhibitions', label: 'Exhibitions', href: '/projects/exhibitions/' },
+    { key: 'curation', label: 'Curation', href: '/curation/' },
+    { key: 'books', label: 'Books', href: '/projects/books/' },
+  ],
+  film: [
+    { key: 'films', label: 'Films', href: '/film/' },
+    { key: 'reel', label: 'Reel', href: '/film/reel/' },
+  ],
+};
+const subnav = subnavs[section];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={desc} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <slot name="head" />
+  </head>
+  <body class={`theme-${theme} section-${section}`}>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header wrap">
+      <a class="brand" href="/">JACOB SPETZLER</a>
+      <button class="menu-button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="3" y1="7" x2="19" y2="7"></line><line x1="3" y1="15" x2="19" y2="15"></line></svg>
+      </button>
+      <nav id="site-nav" class="site-nav" aria-label="Main">
+        {main.map((l) => <a href={l.href} aria-current={section === l.key ? 'page' : undefined}>{l.label}</a>)}
+        <span class="divider" aria-hidden="true"></span>
+        {quiet.map((l) => <a class="quiet" href={l.href} aria-current={section === l.key ? 'page' : undefined}>{l.label}</a>)}
+      </nav>
+    </header>
+    {
+      subnav && (
+        <div class="wrap">
+          <nav class="subnav" aria-label={`${section} pages`}>
+            {subnav.map((l) => <a href={l.href} aria-current={sub === l.key ? 'page' : undefined}>{l.label}</a>)}
+          </nav>
+        </div>
+      )
+    }
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer wrap">
+      <span>© {new Date().getFullYear()} Jacob Spetzler</span>
+      <span class="footer-links">
+        {home?.email && (home.email.includes('@') ? <a href={`mailto:${home.email}`}>{home.email}</a> : <span>{home.email}</span>)}
+        {home?.instagram && <a href={`https://www.instagram.com/${String(home.instagram).replace('@', '')}/`}>{home.instagram}</a>}
+      </span>
+    </footer>
+    <script>
+      import '../scripts/site.js';
+    </script>
+  </body>
+</html>
