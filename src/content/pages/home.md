@@ -1,6 +1,6 @@
 ---
 tagline: Photographer and filmmaker · Gunnison, Colorado
-email: "[your email]"
+email: jacobspetzler@gmail.com
 instagram: "@jacobspetzler_photo"
 availability: Gunnison, Colorado — available for assignment
 loop_video: /media/video/home-loop.mp4

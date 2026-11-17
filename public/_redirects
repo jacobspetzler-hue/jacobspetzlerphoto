@@ -1,0 +1,20 @@
+# Sends visitors who follow old Squarespace links to the matching new page.
+/denverpost /editorial/ 301
+/others /editorial/ 301
+/tear-sheets-1 /editorial/ 301
+/select-published-works /editorial/stories/ 301
+/projects-forte /projects/ 301
+/projects-forte/never-never-land-7wssm /editorial/never-never-land/ 301
+/projects-forte/saguache-crescent-zx97g /projects/ 301
+/projects-forte/the-grandaddy-of-rodeos-pga35 /projects/ 301
+/projects-forte/the-dream-died-in-golden-zzpjr /projects/ 301
+/bodies-of-work /projects/ 301
+/newsroom /projects/newsroom/ 301
+/portfolios /editorial/singles/ 301
+/portfolios/singles-1-c83wc /editorial/singles/ 301
+/portfolios/sports-88w4b /editorial/singles/ 301
+/portfolios/events--34n7g /commercial/ 301
+/portraiture-1 /commercial/ 301
+/contact /about/ 301
+/curriculum-vitae /about/ 301
+/splashpage / 301

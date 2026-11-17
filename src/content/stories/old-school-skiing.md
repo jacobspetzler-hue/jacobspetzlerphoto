@@ -2,8 +2,8 @@
 title: Old-School Skiing
 publication: The Denver Post
 date: 2025-03-27
-role: Photographer & writer
-placement: A1 above the fold; front of Life & Culture and a full page inside
+role: Photographer & writer (original pitch)
+placement: Front page (A1) above the fold; two-page spread inside, including the front page of the Life & Culture section
 link: ""
 front_page: /photos/newspaper-pages/old-school-skiing/denver-post-a1.jpg
 tearsheets:
