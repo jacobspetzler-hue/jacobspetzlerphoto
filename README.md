@@ -44,7 +44,7 @@ To take something down without deleting it, tick **Hide this … for now**.
 
 ## If something goes wrong
 
-- **A change doesn't show up after ten minutes.** Sign in to Cloudflare, open the *jacobspetzler* project, and look at the latest build. If it says "Failed", open it and read the last few lines; they usually name the entry that caused it (often a required box left empty). Fix the entry in Pages CMS and save again.
+- **A change doesn't show up after ten minutes.** Sign in to Cloudflare, open the *jacobspetzlerphoto* project, and look at the latest build. If it says "Failed", open it and read the last few lines; they usually name the entry that caused it (often a required box left empty). Fix the entry in Pages CMS and save again.
 - **You saved something by mistake.** Every save is kept. On GitHub, open this repository, click **Commits**, find the change, and choose **Revert**. Or simply edit the entry again.
 - **You need help.** Any developer, or any AI assistant, can work on this. Point them at this README.
 
