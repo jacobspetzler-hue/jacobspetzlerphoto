@@ -1,11 +1,15 @@
 ---
-title: Palisade peaches
+title: Peaches put this town on the map. A river’s drought could wipe it away.
 publication: The Washington Post
-date:
+date: 2026-09-27
 role: Photographer
-placement: ""
-summary: "[One line about the story — the published headline can replace the title above.]"
+placement: Front page (A1), continued on A12
+summary: ""
 link: ""
+front_page: /photos/newspaper-pages/palisade-peaches/washington-post-a1.jpg
+tearsheets:
+  - image: /photos/newspaper-pages/palisade-peaches/washington-post-a12.jpg
+    label: Page A12
 photos:
   - image: /photos/editorial/palisade-peaches/palisade-01.jpg
     caption: ""
