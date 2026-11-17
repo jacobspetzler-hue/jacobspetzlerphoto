@@ -21,7 +21,7 @@ const facts = [
 const stills = items(d.stills);
 ---
 
-<Base title={d.title} description={d.description || undefined} section="film" sub="films">
+<Base image={d.poster || undefined} title={d.title} description={d.description || undefined} section="film" sub="films">
   <div class="wrap film">
     <section class="block">
       <a class="back" href="/film/">← All films</a>

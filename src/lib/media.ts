@@ -98,6 +98,15 @@ async function build(path: string | null | undefined, opts: { zoom?: boolean }):
   };
 }
 
+/** A JPEG sized for link previews in messages, email and social media. */
+export async function social(path?: string | null): Promise<string | undefined> {
+  const meta = find(path);
+  if (!meta) return undefined;
+  const wide = meta.width >= meta.height;
+  const img = await getImage({ src: meta, width: wide ? 1200 : 800, format: 'jpg', quality: 82 });
+  return img.src;
+}
+
 /** Turns a YouTube or Vimeo link into the address used to play it inside the page. */
 export function embedUrl(link?: string | null): string | undefined {
   if (!link) return undefined;

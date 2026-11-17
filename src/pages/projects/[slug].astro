@@ -27,7 +27,7 @@ const hasBook = spreadPics.length > 0;
 const bookVideo = embedUrl(d.book?.video);
 ---
 
-<Base title={d.title} description={d.summary || undefined} section="projects" sub="work" theme={d.background === 'dark' ? 'dark' : 'white'}>
+<Base image={d.cover || images[0]?.image || spreads[0]?.image} title={d.title} description={d.summary || undefined} section="projects" sub="work" theme={d.background === 'dark' ? 'dark' : 'white'}>
   <div class="wrap project">
     <div class="project-head">
       <div class="lead">

@@ -6,6 +6,7 @@ import '@fontsource-variable/inter-tight';
 import 'photoswipe/style.css';
 import '../styles/global.css';
 import { getEntry } from 'astro:content';
+import { social, firstImage } from '../lib/media';
 
 interface Props {
   title?: string;
@@ -13,11 +14,15 @@ interface Props {
   section?: 'home' | 'editorial' | 'projects' | 'film' | 'commercial' | 'about';
   theme?: 'offwhite' | 'white' | 'dark';
   sub?: string;
+  /** Picture used when this page's link is shared. */
+  image?: string | null;
 }
 const { title, description, section = 'home', sub } = Astro.props;
 const theme = Astro.props.theme ?? ({ projects: 'white', film: 'dark' }[section as string] || 'offwhite');
 const home = (await getEntry('pages', 'home'))?.data as any;
 const fullTitle = title ? `${title} — Jacob Spetzler` : 'Jacob Spetzler — Photographer and filmmaker';
+const shareImage = await social(Astro.props.image || firstImage(home?.preview_editorial));
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const desc = description || 'Jacob Spetzler is a photographer and filmmaker based in Gunnison, Colorado.';
 
 const main = [
@@ -59,6 +64,10 @@ const subnav = subnavs[section];
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={desc} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <link rel="canonical" href={canonical} />
+    {shareImage && <meta property="og:image" content={new URL(shareImage, Astro.site).href} />}
+    <meta name="twitter:card" content={shareImage ? 'summary_large_image' : 'summary'} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <slot name="head" />
   </head>

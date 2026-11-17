@@ -30,7 +30,7 @@ const facts = [
 ].filter(([, v]) => v);
 ---
 
-<Base title={d.title} description={d.summary || `${d.title} — ${d.publication}`} section="editorial" sub={isFront ? 'front-pages' : 'stories'}>
+<Base image={d.front_page || photos[0]?.image} title={d.title} description={d.summary || `${d.title} — ${d.publication}`} section="editorial" sub={isFront ? 'front-pages' : 'stories'}>
   <div class="wrap page">
     <a class="back" href={isFront ? '/editorial/' : '/editorial/stories/'}>← {isFront ? 'All front pages' : 'All stories'}</a>
 
