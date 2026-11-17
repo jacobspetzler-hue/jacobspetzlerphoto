@@ -7,37 +7,37 @@ placement: ""
 summary: "[One line about the story — the published headline can replace the title above.]"
 link: ""
 photos:
-  - image: editorial/palisade-peaches/palisade-01.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-01.jpg
     caption: ""
-  - image: editorial/palisade-peaches/palisade-02.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-02.jpg
     caption: ""
-  - image: editorial/palisade-peaches/palisade-03.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-03.jpg
     caption: ""
-  - image: editorial/palisade-peaches/palisade-04.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-04.jpg
     caption: ""
-  - image: editorial/palisade-peaches/palisade-05.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-05.jpg
     caption: ""
-  - image: editorial/palisade-peaches/palisade-06.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-06.jpg
     caption: ""
-  - image: editorial/palisade-peaches/palisade-07.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-07.jpg
     caption: ""
-  - image: editorial/palisade-peaches/palisade-08.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-08.jpg
     caption: ""
-  - image: editorial/palisade-peaches/palisade-09.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-09.jpg
     caption: ""
-  - image: editorial/palisade-peaches/palisade-10.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-10.jpg
     caption: ""
-  - image: editorial/palisade-peaches/palisade-11.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-11.jpg
     caption: ""
-  - image: editorial/palisade-peaches/palisade-12.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-12.jpg
     caption: ""
-  - image: editorial/palisade-peaches/palisade-13.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-13.jpg
     caption: ""
-  - image: editorial/palisade-peaches/palisade-14.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-14.jpg
     caption: ""
-  - image: editorial/palisade-peaches/palisade-15.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-15.jpg
     caption: ""
-  - image: editorial/palisade-peaches/palisade-16.jpg
+  - image: /photos/editorial/palisade-peaches/palisade-16.jpg
     caption: ""
 clips:
   - video: /media/video/palisade-peach-pickers.mp4

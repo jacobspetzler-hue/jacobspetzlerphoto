@@ -3,10 +3,11 @@
 import Base from '../layouts/Base.astro';
 import Rows from '../components/Rows.astro';
 import { getEntry } from 'astro:content';
+import { items as normalize } from '../lib/media';
 
 const page = (await getEntry('pages', 'commercial'))?.data as any;
 const home = (await getEntry('pages', 'home'))?.data as any;
-const items = (page?.images ?? []).filter((x: any) => x.image);
+const items = normalize(page?.images);
 ---
 
 <Base title="Commercial" section="commercial">

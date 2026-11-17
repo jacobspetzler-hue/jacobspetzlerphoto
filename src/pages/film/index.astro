@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Player from '../../components/Player.astro';
 import Img from '../../components/Img.astro';
 import { allFilms, dot } from '../../lib/content';
+import { items } from '../../lib/media';
 
 const films = await allFilms();
 const featured = films.find((f) => f.data.featured) ?? films[0];
@@ -16,7 +17,7 @@ const facts = featured
       ['Role', featured.data.role],
     ].filter(([, v]) => v)
   : [];
-const stills = (featured?.data.stills ?? []).filter((s) => s.image).slice(0, 3);
+const stills = items(featured?.data.stills).slice(0, 3);
 ---
 
 <Base title="Film" section="film" sub="films">

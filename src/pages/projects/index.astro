@@ -3,6 +3,7 @@
 import Base from '../../layouts/Base.astro';
 import Img from '../../components/Img.astro';
 import { allProjects } from '../../lib/content';
+import { firstImage } from '../../lib/media';
 
 const projects = await allProjects();
 ---
@@ -11,7 +12,7 @@ const projects = await allProjects();
   <div class="wrap project-list">
     {
       projects.map((p) => {
-        const cover = p.data.cover || p.data.images?.[0]?.image || p.data.book?.spreads?.[0]?.image;
+        const cover = p.data.cover || firstImage(p.data.images) || firstImage(p.data.book?.spreads);
         return (
           <a class="project-row" href={`/projects/${p.id}/`}>
             <div class:list={['thumb', { dark: p.data.background === 'dark' }]}>

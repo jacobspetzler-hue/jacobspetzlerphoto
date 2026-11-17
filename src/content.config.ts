@@ -5,9 +5,13 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-const text = z.string().nullish();
-const flag = z.boolean().nullish();
-const num = z.number().nullish();
+// The editing forms sometimes save an empty box as "" — treat that the same as blank.
+const blank = (v: unknown) => (v === '' || v === undefined ? null : v);
+const text = z.preprocess((v) => (v == null ? v : String(v)), z.string().nullish());
+const flag = z.preprocess(blank, z.boolean().nullish());
+const num = z.preprocess(blank, z.coerce.number().nullish());
+const date = z.preprocess(blank, z.coerce.date().nullish());
+const year = z.preprocess((v) => (v == null || v === '' ? null : String(v)), z.string().nullish());
 
 const imageItem = z.object({
   image: text,
@@ -15,14 +19,15 @@ const imageItem = z.object({
   alt: text,
   pair: flag,
 });
-const images = z.array(imageItem).nullish();
+// A list of pictures: either plain paths, or entries with a caption.
+const images = z.array(z.union([z.string(), imageItem])).nullish();
 
 const stories = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/stories' }),
   schema: z.object({
     title: z.string(),
     publication: text,
-    date: z.coerce.date().nullish(),
+    date: date,
     role: text,
     placement: text,
     link: text,
@@ -39,19 +44,19 @@ const projects = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/projects' }),
   schema: z.object({
     title: z.string(),
-    year: z.coerce.string().nullish(),
+    year: year,
     forms: z.array(z.string()).nullish(),
     note: text,
     summary: text,
     cover: text,
-    background: z.enum(['light', 'dark']).nullish(),
-    arrangement: z.enum(['wall', 'grid']).nullish(),
+    background: z.preprocess(blank, z.enum(['light', 'dark']).nullish()),
+    arrangement: z.preprocess(blank, z.enum(['wall', 'grid']).nullish()),
     images: images,
     book: z
       .object({
         details: text,
         video: text,
-        spreads: z.array(z.object({ image: text })).nullish(),
+        spreads: images,
       })
       .nullish(),
     exhibitions: z
@@ -61,7 +66,7 @@ const projects = defineCollection({
           venue: text,
           city: text,
           dates: text,
-          year: z.coerce.string().nullish(),
+          year: year,
           images: images,
         }),
       )
@@ -79,7 +84,7 @@ const curation = defineCollection({
     venue: text,
     city: text,
     dates: text,
-    year: z.coerce.string().nullish(),
+    year: year,
     hero: text,
     artists: z
       .array(
@@ -105,7 +110,7 @@ const films = defineCollection({
   schema: z.object({
     title: z.string(),
     client: text,
-    year: z.coerce.string().nullish(),
+    year: year,
     runtime: text,
     role: text,
     video: text,

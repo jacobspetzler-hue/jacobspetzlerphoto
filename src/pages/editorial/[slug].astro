@@ -4,7 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Img from '../../components/Img.astro';
 import Rows from '../../components/Rows.astro';
 import { allStories, frontPages, dot } from '../../lib/content';
-import { fmtDate } from '../../lib/media';
+import { fmtDate, items } from '../../lib/media';
 
 export async function getStaticPaths() {
   const stories = await allStories();
@@ -19,7 +19,7 @@ const i = fronts.findIndex((s) => s.id === story.id);
 const prev = isFront && fronts.length > 1 ? fronts[(i - 1 + fronts.length) % fronts.length] : null;
 const next = isFront && fronts.length > 1 ? fronts[(i + 1) % fronts.length] : null;
 const tears = (d.tearsheets ?? []).filter((t) => t.image);
-const photos = (d.photos ?? []).filter((p) => p.image);
+const photos = items(d.photos);
 const clips = (d.clips ?? []).filter((c) => c.video);
 const arrow = `<svg aria-hidden="true" width="20" height="20" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="5" y1="14" x2="22" y2="14"></line><polyline points="15,7 22,14 15,21"></polyline></svg>`;
 const facts = [
@@ -120,7 +120,7 @@ const facts = [
           <h2 class="label-rule">Moving images</h2>
           <div class="three-up">
             {clips.map((c) => (
-              <video data-loop muted loop playsinline preload="none" poster={c.poster || undefined} aria-label={`Silent clip from ${d.title}`}>
+              <video data-loop muted loop playsinline preload={c.poster ? "none" : "metadata"} poster={c.poster || undefined} aria-label={`Silent clip from ${d.title}`}>
                 <source src={c.video} type="video/mp4" />
               </video>
             ))}

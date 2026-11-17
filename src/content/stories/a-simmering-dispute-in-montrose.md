@@ -5,9 +5,9 @@ date: 2025-06-16
 role: Photographer
 placement: A1; continued inside
 link: ""
-front_page: editorial/montrose/denver-post-a1.jpg
+front_page: /photos/newspaper-pages/montrose/denver-post-a1.jpg
 tearsheets:
-  - image: editorial/montrose/denver-post-inside.jpg
+  - image: /photos/newspaper-pages/montrose/denver-post-inside.jpg
     label: Inside page
 photos: []
 ---

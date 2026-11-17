@@ -1,0 +1,9 @@
+// Tells Cloudflare where the finished site is after each build. Rarely needs changing.
+{
+  "name": "jacobspetzler",
+  "compatibility_date": "2026-11-16",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+}

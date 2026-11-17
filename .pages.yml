@@ -1,0 +1,564 @@
+# These are the editing forms for the site, used by Pages CMS (app.pagescms.org).
+# Each block below becomes one item in the editing menu.
+
+media:
+  - name: photos
+    label: Photos
+    input: src/media
+    output: /photos
+    categories: [image]
+  - name: clips
+    label: Clips and files
+    input: public/media
+    output: /media
+
+content:
+  # ------------------------------------------------------------------ Editorial
+  - name: stories
+    label: Editorial stories
+    description: Every published story. If you add a front page scan, the story also appears on the Front Pages wall.
+    type: collection
+    path: src/content/stories
+    filename: "{primary}.md"
+    format: yaml-frontmatter
+    view:
+      fields: [title, publication, date]
+      primary: title
+      sort: [date, title]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Headline
+        type: string
+        required: true
+      - name: publication
+        label: Publication
+        type: string
+        description: For example, The Denver Post.
+      - name: date
+        label: Date published
+        type: date
+      - name: role
+        label: Your role
+        type: string
+        description: For example, Photographer, or Photographer & writer.
+      - name: placement
+        label: Placement
+        type: string
+        description: For example, A1 above the fold; continued inside.
+      - name: summary
+        label: One-line summary
+        type: text
+      - name: link
+        label: Link to the story online
+        type: string
+      - name: front_page
+        label: Front page scan (A1)
+        type: image
+        description: Leave empty if the story did not run on a front page.
+        options:
+          media: photos
+          path: newspaper-pages
+      - name: tearsheets
+        label: Other pages
+        description: Inside pages, section fronts, spreads.
+        type: object
+        list:
+          collapsible:
+            summary: "{label}"
+        fields:
+          - name: image
+            label: Page scan
+            type: image
+            options:
+              media: photos
+              path: newspaper-pages
+          - name: label
+            label: Label
+            type: string
+            description: For example, Page A14.
+      - name: photos
+        label: Photographs
+        type: object
+        list:
+          collapsible:
+            summary: "{caption}"
+        fields:
+          - name: image
+            label: Photo
+            type: image
+            options:
+              media: photos
+              path: editorial
+          - name: caption
+            label: Caption
+            type: text
+      - name: clips
+        label: Silent video clips
+        description: Short, silent clips under 20 MB each.
+        type: object
+        list: true
+        fields:
+          - name: video
+            label: Clip
+            type: file
+            options:
+              media: clips
+              path: video
+              categories: [video]
+          - name: poster
+            label: Still image shown before it plays (optional)
+            type: file
+            options:
+              media: clips
+              path: video
+              categories: [image]
+      - name: draft
+        label: Hide this story for now
+        type: boolean
+
+  - name: singles
+    label: Editorial singles
+    type: file
+    path: src/content/pages/singles.md
+    format: yaml-frontmatter
+    fields:
+      - name: images
+        label: Singles
+        type: object
+        list:
+          collapsible:
+            summary: "{caption}"
+        fields:
+          - name: image
+            label: Photo
+            type: image
+            options:
+              media: photos
+              path: editorial/singles
+          - name: caption
+            label: Caption
+            type: text
+
+  # ------------------------------------------------------------------- Projects
+  - name: projects
+    label: Projects
+    description: Bodies of work. A project's book and exhibitions live on the same page.
+    type: collection
+    path: src/content/projects
+    filename: "{primary}.md"
+    format: yaml-frontmatter
+    view:
+      fields: [title, year, order]
+      primary: title
+      sort: [order, title]
+      default:
+        sort: order
+        order: asc
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: year
+        label: Year(s)
+        type: string
+        description: For example, 2025, or Ongoing.
+      - name: forms
+        label: Forms it took
+        type: string
+        list: true
+        description: For example, Handmade book, Exhibition, Prints.
+      - name: note
+        label: Short note under the title (optional)
+        type: string
+      - name: order
+        label: Position in the list
+        type: number
+        description: 1 appears first, 2 second, and so on.
+      - name: cover
+        label: Small picture shown in the project list
+        type: image
+        options:
+          media: photos
+          path: projects
+      - name: background
+        label: Background
+        type: select
+        options:
+          values: [light, dark]
+      - name: arrangement
+        label: Arrangement
+        type: select
+        description: "wall = single images and pairs with lots of space. grid = even rows."
+        options:
+          values: [wall, grid]
+      - name: images
+        label: Images
+        description: Add as many as you like, then drag them into order.
+        type: image
+        options:
+          media: photos
+          path: projects
+          multiple: true
+      - name: body
+        label: Statement
+        type: rich-text
+        options:
+          format: markdown
+      - name: book
+        label: The book
+        type: object
+        fields:
+          - name: details
+            label: Details
+            type: string
+            description: For example, Handmade, edition of 10, 60 pages.
+          - name: spreads
+            label: Photos of the spreads
+            type: image
+            options:
+              media: photos
+              path: projects
+              multiple: true
+          - name: video
+            label: Page-through video link (YouTube or Vimeo, optional)
+            type: string
+      - name: exhibitions
+        label: Exhibitions
+        type: object
+        list:
+          collapsible:
+            summary: "{venue} {year}"
+        fields:
+          - name: title
+            label: Show title
+            type: string
+          - name: venue
+            label: Venue
+            type: string
+          - name: city
+            label: City
+            type: string
+          - name: dates
+            label: Dates
+            type: string
+          - name: year
+            label: Year
+            type: string
+          - name: images
+            label: Installation views
+            type: image
+            options:
+              media: photos
+              path: projects
+              multiple: true
+      - name: draft
+        label: Hide this project for now
+        type: boolean
+
+  - name: curation
+    label: Curated shows
+    description: Each show gets its own page at a short address you can send to people.
+    type: collection
+    path: src/content/curation
+    filename: "{primary}.md"
+    format: yaml-frontmatter
+    view:
+      fields: [title, year]
+      primary: title
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: subtitle
+        label: Subtitle
+        type: string
+      - name: venue
+        label: Venue
+        type: string
+      - name: city
+        label: City
+        type: string
+      - name: dates
+        label: Dates
+        type: string
+      - name: year
+        label: Year
+        type: string
+      - name: hero
+        label: Main installation view
+        type: image
+        options:
+          media: photos
+          path: curation
+      - name: body
+        label: Curatorial statement
+        type: rich-text
+        options:
+          format: markdown
+      - name: artists
+        label: Artists
+        type: object
+        list:
+          collapsible:
+            summary: "{name}"
+        fields:
+          - name: name
+            label: Name
+            type: string
+            required: true
+          - name: work
+            label: Work shown (title)
+            type: string
+          - name: bio
+            label: Short bio
+            type: text
+          - name: website
+            label: Website
+            type: string
+          - name: instagram
+            label: Instagram handle
+            type: string
+          - name: images
+            label: Images of their work
+            type: image
+            options:
+              media: photos
+              path: curation
+              multiple: true
+      - name: installation
+        label: Installation views
+        type: image
+        options:
+          media: photos
+          path: curation
+          multiple: true
+      - name: onesheet
+        label: One-sheet (PDF)
+        type: file
+        options:
+          media: clips
+          path: files
+          extensions: [pdf]
+      - name: draft
+        label: Hide this show for now
+        type: boolean
+
+  # ----------------------------------------------------------------------- Film
+  - name: films
+    label: Films
+    type: collection
+    path: src/content/films
+    filename: "{primary}.md"
+    format: yaml-frontmatter
+    view:
+      fields: [title, client, year]
+      primary: title
+      sort: [order, title]
+      default:
+        sort: order
+        order: asc
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: client
+        label: Client
+        type: string
+      - name: year
+        label: Year
+        type: string
+      - name: runtime
+        label: Runtime
+        type: string
+        description: For example, 12:30.
+      - name: role
+        label: Your role
+        type: string
+      - name: video
+        label: YouTube or Vimeo link
+        type: string
+        description: Paste the normal link to the film.
+      - name: poster
+        label: Poster frame
+        type: image
+        description: The still shown before someone presses play.
+        options:
+          media: photos
+          path: film
+      - name: loop
+        label: Silent preview clip (optional)
+        type: file
+        description: Plays silently in place of the poster frame. Under 20 MB.
+        options:
+          media: clips
+          path: video
+          categories: [video]
+      - name: description
+        label: Description
+        type: text
+      - name: stills
+        label: Stills
+        type: image
+        options:
+          media: photos
+          path: film
+          multiple: true
+      - name: credits
+        label: Credits
+        type: text
+        description: One per line.
+      - name: featured
+        label: Feature at the top of the Film page
+        type: boolean
+      - name: order
+        label: Position in the list
+        type: number
+      - name: draft
+        label: Hide this film for now
+        type: boolean
+
+  # ---------------------------------------------------------------- Single pages
+  - name: home
+    label: Homepage
+    type: file
+    path: src/content/pages/home.md
+    format: yaml-frontmatter
+    fields:
+      - name: tagline
+        label: Line under your name
+        type: string
+      - name: body
+        label: Short bio
+        type: rich-text
+        options:
+          format: markdown
+      - name: email
+        label: Contact email
+        type: string
+      - name: instagram
+        label: Instagram handle
+        type: string
+      - name: availability
+        label: Availability line
+        type: string
+      - name: loop_video
+        label: Clip in the big frame
+        type: file
+        description: A short silent clip, shaped 3:2, under 20 MB.
+        options:
+          media: clips
+          path: video
+          categories: [video]
+      - name: loop_poster
+        label: Still shown while the clip loads
+        type: file
+        options:
+          media: clips
+          path: video
+          categories: [image]
+      - name: reel_link
+        label: Reel link (YouTube or Vimeo), once you have one
+        type: string
+      - name: door_editorial
+        label: Text on the Editorial button
+        type: string
+      - name: door_projects
+        label: Text on the Projects button
+        type: string
+      - name: door_film
+        label: Text on the Film button
+        type: string
+      - name: preview_editorial
+        label: Editorial preview (one photo, or two verticals)
+        type: image
+        options:
+          media: photos
+          multiple:
+            max: 2
+      - name: preview_projects
+        label: Projects preview (one photo, or two verticals)
+        type: image
+        options:
+          media: photos
+          multiple:
+            max: 2
+      - name: film_video
+        label: Film preview clip
+        type: file
+        options:
+          media: clips
+          path: video
+          categories: [video]
+      - name: film_poster
+        label: Still shown while the film preview loads
+        type: file
+        options:
+          media: clips
+          path: video
+          categories: [image]
+
+  - name: about
+    label: About page
+    type: file
+    path: src/content/pages/about.md
+    format: yaml-frontmatter
+    fields:
+      - name: body
+        label: Full bio
+        type: rich-text
+        options:
+          format: markdown
+      - name: portrait
+        label: Portrait of you (optional)
+        type: image
+        options:
+          media: photos
+          path: about
+      - name: cv
+        label: CV sections
+        type: object
+        list:
+          collapsible:
+            summary: "{heading}"
+        fields:
+          - name: heading
+            label: Heading
+            type: string
+          - name: items
+            label: Lines
+            type: string
+            list: true
+      - name: clients
+        label: Editorial clients
+        type: string
+        list: true
+      - name: cv_pdf
+        label: Full CV to download (PDF, optional)
+        type: file
+        options:
+          media: clips
+          path: files
+          extensions: [pdf]
+
+  - name: commercial
+    label: Commercial page
+    type: file
+    path: src/content/pages/commercial.md
+    format: yaml-frontmatter
+    fields:
+      - name: intro
+        label: Intro line
+        type: text
+      - name: images
+        label: Images
+        type: image
+        options:
+          media: photos
+          path: commercial
+          multiple: true

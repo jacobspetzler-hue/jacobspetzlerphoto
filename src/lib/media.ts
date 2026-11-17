@@ -20,8 +20,22 @@ export function clean(path?: string | null) {
     .trim()
     .replace(/^\/+/, '')
     .replace(/^src\//, '')
-    .replace(/^media\//, '');
+    .replace(/^(media|photos)\//, '');
 }
+
+export interface Item {
+  image?: string | null;
+  caption?: string | null;
+  alt?: string | null;
+  pair?: boolean | null;
+}
+/** Lists of pictures can be plain paths or entries with captions. This makes them all the same shape. */
+export function items(list?: unknown[] | null): Item[] {
+  return (list ?? [])
+    .map((x) => (typeof x === 'string' ? { image: x } : (x as Item)))
+    .filter((x) => x && x.image);
+}
+export const firstImage = (list?: unknown[] | null) => items(list)[0]?.image;
 
 export function find(path?: string | null): ImageMetadata | undefined {
   const p = clean(path);

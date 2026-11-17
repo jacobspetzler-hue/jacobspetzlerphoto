@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Player from '../../components/Player.astro';
 import Rows from '../../components/Rows.astro';
 import { allFilms } from '../../lib/content';
+import { items } from '../../lib/media';
 
 export async function getStaticPaths() {
   const films = await allFilms();
@@ -17,7 +18,7 @@ const facts = [
   ['Runtime', d.runtime],
   ['Role', d.role],
 ].filter(([, v]) => v);
-const stills = (d.stills ?? []).filter((s) => s.image);
+const stills = items(d.stills);
 ---
 
 <Base title={d.title} description={d.description || undefined} section="film" sub="films">

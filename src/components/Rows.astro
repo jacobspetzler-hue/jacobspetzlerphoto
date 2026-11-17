@@ -1,7 +1,7 @@
 ---
 // Even rows of photos. Each photo keeps its own shape; nothing is cropped.
 import Img from './Img.astro';
-import { picture } from '../lib/media';
+import { picture, items as normalize } from '../lib/media';
 
 interface Item {
   image?: string | null;
@@ -9,11 +9,12 @@ interface Item {
   alt?: string | null;
 }
 interface Props {
-  items: Item[];
+  items: unknown[];
   large?: boolean;
   fallbackAlt?: string;
 }
-const { items, large = false, fallbackAlt = '' } = Astro.props;
+const { large = false, fallbackAlt = '' } = Astro.props;
+const items = normalize(Astro.props.items) as Item[];
 const ready = (
   await Promise.all(items.map(async (it) => ({ it, pic: await picture(it.image) })))
 ).filter((x) => x.pic);

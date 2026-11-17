@@ -1,10 +1,10 @@
 ---
 title: Singles
 images:
-  - image: editorial/singles/michael-franti.jpg
+  - image: /photos/editorial/singles/michael-franti.jpg
     caption: ""
-  - image: editorial/singles/portrait-asters.jpg
+  - image: /photos/editorial/singles/portrait-asters.jpg
     caption: ""
-  - image: editorial/singles/steinholding.jpg
+  - image: /photos/editorial/singles/steinholding.jpg
     caption: ""
 ---

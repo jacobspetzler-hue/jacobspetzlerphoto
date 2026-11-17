@@ -5,6 +5,7 @@ import Img from '../../components/Img.astro';
 import Rows from '../../components/Rows.astro';
 import { render } from 'astro:content';
 import { allCuration, dot } from '../../lib/content';
+import { items } from '../../lib/media';
 
 export async function getStaticPaths() {
   const shows = await allCuration();
@@ -13,7 +14,7 @@ export async function getStaticPaths() {
 const show = (await allCuration()).find((s) => s.id === Astro.props.id)!;
 const d = show.data;
 const { Content } = await render(show);
-const views = (d.installation ?? []).filter((x) => x.image);
+const views = items(d.installation);
 const artists = d.artists ?? [];
 const shareUrl = new URL(`/curation/${show.id}/`, Astro.site).href;
 ---
@@ -51,9 +52,9 @@ const shareUrl = new URL(`/curation/${show.id}/`, Astro.site).href;
               </div>
               {a.work && <p><em>{a.work}</em></p>}
               {a.bio && <p>{a.bio}</p>}
-              {(a.images ?? []).filter((x) => x.image).length > 0 && (
+              {items(a.images).length > 0 && (
                 <div style="margin-top: 16px">
-                  <Rows items={(a.images ?? []).filter((x) => x.image)} fallbackAlt={`Work by ${a.name}`} />
+                  <Rows items={items(a.images)} fallbackAlt={`Work by ${a.name}`} />
                 </div>
               )}
             </div>

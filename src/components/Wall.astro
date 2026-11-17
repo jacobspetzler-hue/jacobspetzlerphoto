@@ -3,7 +3,7 @@
 // set off to one side, with lots of space. The arrangement is worked out
 // automatically from the order and shape of the photos.
 import Img from './Img.astro';
-import { picture } from '../lib/media';
+import { picture, items as normalize } from '../lib/media';
 
 interface Item {
   image?: string | null;
@@ -12,10 +12,11 @@ interface Item {
   pair?: boolean | null;
 }
 interface Props {
-  items: Item[];
+  items: unknown[];
   fallbackAlt?: string;
 }
-const { items, fallbackAlt = '' } = Astro.props;
+const { fallbackAlt = '' } = Astro.props;
+const items = normalize(Astro.props.items) as Item[];
 const ready = (
   await Promise.all(items.map(async (it) => ({ it, pic: await picture(it.image) })))
 ).filter((x) => x.pic) as { it: Item; pic: NonNullable<Awaited<ReturnType<typeof picture>>> }[];

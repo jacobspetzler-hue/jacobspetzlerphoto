@@ -6,7 +6,7 @@ import Rows from '../../components/Rows.astro';
 import Wall from '../../components/Wall.astro';
 import { render } from 'astro:content';
 import { allProjects, dot } from '../../lib/content';
-import { picture, embedUrl } from '../../lib/media';
+import { picture, embedUrl, items } from '../../lib/media';
 
 export async function getStaticPaths() {
   const projects = await allProjects();
@@ -19,8 +19,8 @@ const next = projects.length > 1 ? projects[(idx + 1) % projects.length] : null;
 const d = project.data;
 const { Content } = await render(project);
 const hasStatement = Boolean(project.body?.trim());
-const images = (d.images ?? []).filter((x) => x.image);
-const spreads = (d.book?.spreads ?? []).filter((x) => x.image);
+const images = items(d.images);
+const spreads = items(d.book?.spreads);
 const spreadPics = (await Promise.all(spreads.map((s) => picture(s.image)))).filter(Boolean);
 const exhibitions = d.exhibitions ?? [];
 const hasBook = spreadPics.length > 0;
@@ -99,7 +99,7 @@ const bookVideo = embedUrl(d.book?.video);
       exhibitions.length > 0 && (
         <section id="exhibition" class="block">
           {exhibitions.map((e) => {
-            const views = (e.images ?? []).filter((x) => x.image);
+            const views = items(e.images);
             return (
               <>
                 <div class="section-rule">

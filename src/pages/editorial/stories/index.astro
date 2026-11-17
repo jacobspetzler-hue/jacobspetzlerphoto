@@ -3,7 +3,7 @@
 import Base from '../../../layouts/Base.astro';
 import Img from '../../../components/Img.astro';
 import { otherStories, dot } from '../../../lib/content';
-import { fmtDate } from '../../../lib/media';
+import { fmtDate, firstImage } from '../../../lib/media';
 
 const stories = await otherStories();
 ---
@@ -17,7 +17,7 @@ const stories = await otherStories();
     <div class="story-cards">
       {
         stories.map((s) => {
-          const lead = s.data.photos?.[0]?.image || s.data.tearsheets?.[0]?.image;
+          const lead = firstImage(s.data.photos) || s.data.tearsheets?.[0]?.image;
           return (
             <a class="story-card" href={`/editorial/${s.id}/`}>
               <div class="label">{dot([s.data.publication, fmtDate(s.data.date)])}</div>
